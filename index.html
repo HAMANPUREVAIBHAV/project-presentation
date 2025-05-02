@@ -85,6 +85,7 @@ Learning, Deep Learning, and Extreme Learning Machines</title>
         
         :root {
             --primary: #2563eb;
+            --formula-font-color: #f1f5f9;
             --primary-dark: #1d4ed8;
             --secondary: #059669;
             --accent: #7c3aed;
@@ -107,6 +108,7 @@ Learning, Deep Learning, and Extreme Learning Machines</title>
             --foreground: #e2e8f0;
             --card: #1e293b;
             --card-border: #334155;
+            --formula-font-color:#7f93b3;
             --muted: #94a3b8;
             --success: #10b981;
             --warning: #f59e0b;
@@ -344,7 +346,7 @@ Learning, Deep Learning, and Extreme Learning Machines</title>
         }
         
         .aqi-formula {
-            background-color: #f1f5f9;
+            background-color: var(--formula-font-color);
             padding: 1rem;
             border-radius: 0.25rem;
             margin: 1rem 0;
@@ -699,7 +701,7 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
                 <div class="card model-card">
                     <div class="model-header">
                         <span class="model-name">Logistic Regression</span>
-                        <span class="model-accuracy">78% Acc</span>
+                        <span class="model-accuracy">83% Acc</span>
                     </div>
                     <p class="model-description">Base classification model using sigmoid function to map features to AQI category probabilities.</p>
                     <div class="strengths-weaknesses">
@@ -724,7 +726,7 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
                 <div class="card model-card">
                     <div class="model-header">
                         <span class="model-name">Decision Tree</span>
-                        <span class="model-accuracy">82% Acc</span>
+                        <span class="model-accuracy">99% Acc</span>
                     </div>
                     <p class="model-description">Tree-based classification creating a hierarchical structure of decision rules.</p>
                     <div class="strengths-weaknesses">
@@ -749,7 +751,7 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
                 <div class="card model-card">
                     <div class="model-header">
                         <span class="model-name">Random Forest</span>
-                        <span class="model-accuracy">91% Acc</span>
+                        <span class="model-accuracy">99% Acc</span>
                     </div>
                     <p class="model-description">Ensemble method combining multiple decision trees for robust classification.</p>
                     <div class="strengths-weaknesses">
@@ -774,7 +776,7 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
                 <div class="card model-card">
                     <div class="model-header">
                         <span class="model-name">K-Nearest Neighbors</span>
-                        <span class="model-accuracy">79% Acc</span>
+                        <span class="model-accuracy">99% Acc</span>
                     </div>
                     <p class="model-description">Instance-based classification using proximity of data points in feature space.</p>
                     <div class="strengths-weaknesses">
@@ -799,7 +801,7 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
                 <div class="card model-card">
                     <div class="model-header">
                         <span class="model-name">SVM</span>
-                        <span class="model-accuracy">85% Acc</span>
+                        <span class="model-accuracy">98% Acc</span>
                     </div>
                     <p class="model-description">Boundary-based classification finding optimal hyperplane between categories.</p>
                     <div class="strengths-weaknesses">
@@ -820,31 +822,31 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
                         </div>
                     </div>
                 </div>
-                
                 <div class="card model-card">
                     <div class="model-header">
-                        <span class="model-name">Deep Learning</span>
-                        <span class="model-accuracy">88% Acc</span>
+                        <span class="model-name">Naive Bayes</span>
+                        <span class="model-accuracy">96% Acc</span>
                     </div>
-                    <p class="model-description">Neural network approach learning hierarchical representations of data.</p>
+                    <p class="model-description">Probabilistic classification using Bayes' theorem with feature independence assumption.</p>
                     <div class="strengths-weaknesses">
                         <div class="strengths">
                             <h4>Strengths</h4>
                             <ul>
-                                <li>Complex patterns</li>
-                                <li>Adaptable architecture</li>
-                                <li>Feature learning</li>
+                                <li>Simple & fast</li>
+                                <li>High-dim data</li>
+                                <li>Categorical data</li>
                             </ul>
                         </div>
                         <div class="weaknesses">
                             <h4>Limitations</h4>
                             <ul>
-                                <li>Data hungry</li>
-                                <li>Black-box nature</li>
+                                <li>Independence assumption</li>
+                                <li>Zero frequency issue</li>
                             </ul>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </section>
         
@@ -854,6 +856,7 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
                 <div class="card model-card">
                     <div class="model-header">
                         <span class="model-name">Genetic Algorithm</span>
+                        <span class="model-accuracy">66% Acc</span>
                     </div>
                     <p class="model-description">Evolutionary approach for hyperparameter optimization across models.</p>
                     <div class="strengths-weaknesses">
@@ -899,31 +902,32 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
                         </div>
                     </div>
                 </div>
-                
                 <div class="card model-card">
                     <div class="model-header">
-                        <span class="model-name">Naive Bayes</span>
-                        <span class="model-accuracy">76% Acc</span>
+                        <span class="model-name">Deep Learning</span>
+                        <span class="model-accuracy">88% Acc</span>
                     </div>
-                    <p class="model-description">Probabilistic classification using Bayes' theorem with feature independence assumption.</p>
+                    <p class="model-description">Neural network approach learning hierarchical representations of data.</p>
                     <div class="strengths-weaknesses">
                         <div class="strengths">
                             <h4>Strengths</h4>
                             <ul>
-                                <li>Simple & fast</li>
-                                <li>High-dim data</li>
-                                <li>Categorical data</li>
+                                <li>Complex patterns</li>
+                                <li>Adaptable architecture</li>
+                                <li>Feature learning</li>
                             </ul>
                         </div>
                         <div class="weaknesses">
                             <h4>Limitations</h4>
                             <ul>
-                                <li>Independence assumption</li>
-                                <li>Zero frequency issue</li>
+                                <li>Data hungry</li>
+                                <li>Black-box nature</li>
                             </ul>
                         </div>
                     </div>
                 </div>
+                
+                
             </div>
         </section>
         
@@ -932,7 +936,7 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
             <div class="aqi-calculation">
                 <p>The Air Quality Index (AQI) is calculated using a piecewise linear function that maps individual pollutant indices to corresponding AQI values.</p>
                 
-                <div class="aqi-formula">
+                <div class="formula-font-color aqi-formula">
                     AQI = [(I_High - I_Low) / (C_High - C_Low)] × (C - C_Low) + I_Low
                 </div>
                 
@@ -970,37 +974,41 @@ Learning, Deep Learning, and Extreme Learning Machines</h1>
             <div class="chart-container">
                 <h3 style="margin-bottom: 1rem;">Accuracy Comparison (%)</h3>
                 <div class="chart">
-                    <div class="bar" style="height: 78%;">
-                        <span class="bar-value">78%</span>
+                    <div class="bar" style="height: 83%;">
+                        <span class="bar-value">83%</span>
                         <span class="bar-label">Logistic</span>
                     </div>
-                    <div class="bar" style="height: 82%;">
-                        <span class="bar-value">82%</span>
+                    <div class="bar" style="height: 99%;">
+                        <span class="bar-value">99%</span>
                         <span class="bar-label">D.Tree</span>
                     </div>
-                    <div class="bar" style="height: 91%;">
-                        <span class="bar-value">91%</span>
+                    <div class="bar" style="height: 99%;">
+                        <span class="bar-value">99%</span>
                         <span class="bar-label">RF</span>
                     </div>
-                    <div class="bar" style="height: 79%;">
-                        <span class="bar-value">79%</span>
+                    <div class="bar" style="height: 99%;">
+                        <span class="bar-value">99%</span>
                         <span class="bar-label">KNN</span>
                     </div>
-                    <div class="bar" style="height: 85%;">
-                        <span class="bar-value">85%</span>
+                    <div class="bar" style="height: 98%;">
+                        <span class="bar-value">98%</span>
                         <span class="bar-label">SVM</span>
                     </div>
-                    <div class="bar" style="height: 76%;">
-                        <span class="bar-value">76%</span>
+                    <div class="bar" style="height: 96%;">
+                        <span class="bar-value">96%</span>
                         <span class="bar-label">NB</span>
                     </div>
-                    <div class="bar" style="height: 88%;">
-                        <span class="bar-value">88%</span>
+                    <div class="bar" style="height: 95%;">
+                        <span class="bar-value">95%</span>
                         <span class="bar-label">DL</span>
                     </div>
                     <div class="bar" style="height: 83%;">
                         <span class="bar-value">83%</span>
                         <span class="bar-label">ELM</span>
+                    </div>
+                    <div class="bar" style="height: 66%;">
+                        <span class="bar-value">66%</span>
+                        <span class="bar-label">GA</span>
                     </div>
                 </div>
                 <div class="x-axis"></div>
