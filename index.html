@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictive Modeling of Air Quality: Performance Comparison of Supervised Machine 
+Learning, Deep Learning, and Extreme Learning Machines</title>
+    <style>
+        /* Theme switch styles */
+        .theme-switch-wrapper {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .theme-switch {
+            display: inline-block;
+            height: 34px;
+            position: relative;
+            width: 60px;
+        }
+        
+        .theme-switch input {
+            display: none;
+        }
+        
+        .slider {
+            background-color: #1e293b;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+        
+        .slider:before {
+            background-color: #fff;
+            bottom: 4px;
+            content: "";
+            height: 26px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 26px;
+            z-index: 1;
+        }
+        
+        input:checked + .slider {
+            background-color: #60a5fa;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .slider.round {
+            border-radius: 34px;
+        }
+        
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        
+        .moon-icon, .sun-icon {
+            color: white;
+            z-index: 0;
+        }
+        
+        .moon-icon {
+            margin-right: 5px;
+        }
+        
+        .sun-icon {
+            margin-left: 5px;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #059669;
+            --accent: #7c3aed;
+            --background: #f8fafc;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --card-border: #e2e8f0;
+            --muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --secondary: #34d399;
+            --accent: #a78bfa;
+            --background: #0f172a;
+            --foreground: #e2e8f0;
+            --card: #1e293b;
+            --card-border: #334155;
+            --muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background-color: var(--card);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card h2 .icon {
+            margin-right: 0.5rem;
+            background-color: var(--primary);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .card ul {
+            list-style-type: none;
+            margin-left: 1rem;
+        }
+        
+        .card ul li {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        .card ul li::before {
+            content: "•";
+            color: var(--secondary);
+            font-weight: bold;
+            position: absolute;
+            left: -1rem;
+        }
+        
+        .model-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .model-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .model-name {
+            font-weight: bold;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+        }
+        
+        .model-accuracy {
+            margin-left: auto;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .model-description {
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+        
+        .strengths-weaknesses {
+            display: flex;
+            margin-top: auto;
+        }
+        
+        .strengths, .weaknesses {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+        
+        .strengths h4, .weaknesses h4 {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strengths h4 {
+            color: var(--success);
+        }
+        
+        .weaknesses h4 {
+            color: var(--warning);
+        }
+        
+        .strengths h4::before, .weaknesses h4::before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .strengths h4::before {
+            background-color: var(--success);
+        }
+        
+        .weaknesses h4::before {
+            background-color: var(--warning);
+        }
+        
+        .strengths ul, .weaknesses ul {
+            margin-left: 0.5rem;
+            list-style-type: none;
+        }
+        
+        .strengths ul li, .weaknesses ul li {
+            margin-bottom: 0.25rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+        
+        .strengths ul li::before, .weaknesses ul li::before {
+            position: absolute;
+            left: 0;
+        }
+        
+        .strengths ul li::before {
+            content: "+";
+            color: var(--success);
+        }
+        
+        .weaknesses ul li::before {
+            content: "-";
+            color: var(--warning);
+        }
+        
+        .section {
+            margin: 3rem 0;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+        
+        .aqi-calculation {
+            background-color: var(--card);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .aqi-formula {
+            background-color: #f1f5f9;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+        
+        .steps {
+            counter-reset: step;
+        }
+        
+        .step {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.75rem;
+            height: 1.75rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .step h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            background-color: var(--card);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chart {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 1rem 0;
+        }
+        
+        .bar {
+            width: 40px;
+            background: linear-gradient(to top, var(--primary), var(--accent));
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: height 1s ease;
+        }
+        
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+        
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+        
+        .y-axis {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+        
+        .y-axis-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+        
+        .x-axis {
+            width: 100%;
+            height: 1px;
+            background-color: var(--muted);
+            margin-top: 1rem;
+        }
+        
+        .conclusion {
+            background: linear-gradient(135deg, #4338ca, #3b82f6);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            margin: 3rem 0;
+        }
+        
+        .conclusion h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 0.5rem;
+        }
+        
+        .key-findings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .finding {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.25rem;
+            border-left: 3px solid var(--success);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--muted);
+            border-top: 1px solid var(--card-border);
+            margin-top: 3rem;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tag.ml {
+            background-color: var(--secondary);
+        }
+        
+        .tag.env {
+            background-color: var(--accent);
+        }
+        
+        @media (max-width: 768px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .strengths-weaknesses {
+                flex-direction: column;
+            }
+            
+            .strengths, .weaknesses {
+                margin-bottom: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        .carousel {
+            position: relative;
+            max-width: 800px;
+            margin: 2rem auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        .carousel-button.prev {
+            left: 10px;
+        }
+
+        .carousel-button.next {
+            right: 10px;
+        }
+
+        .carousel-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .publication-content {
+            background-color: var(--card);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            line-height: 1.8;
+        }
+
+        .publication-content p {
+            margin-bottom: 1rem;
+        }
+
+        .publication-content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .publication-content ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .publication-content strong {
+            color: var(--primary-dark);
+        }
+
+        .publication-content em {
+            font-style: italic;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="checkbox">
+                    <input type="checkbox" id="checkbox" />
+                    <div class="slider round">
+                        <div class="moon-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 A7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        </div>
+                        <div class="sun-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <h1>Predictive Modeling of Air Quality: Performance Comparison of Supervised Machine 
+Learning, Deep Learning, and Extreme Learning Machines</h1>
+            <p class="subtitle">A machine learning approach to predict air quality indices using multiple supervised learning algorithms and genetic optimization</p>
+            <div style="margin-top: 1rem;">
+                <span class="tag">AI</span>
+                <span class="tag ml">Machine Learning</span>
+                <span class="tag env">Environmental Monitoring</span>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section class="section">
+            <h2 class="section-title">Project Overview</h2>
+            <div class="card">
+                <p>This project implements a comprehensive machine learning solution to predict air quality indices (AQI) using various supervised learning algorithms. The system analyzes pollutant measurements to classify air quality into different categories, providing valuable environmental monitoring capabilities.</p>
+                <p style="margin-top: 1rem;">The implementation includes data preprocessing, feature engineering, model training, and performance evaluation, with a focus on optimizing predictive accuracy through genetic algorithm techniques.</p>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title">Data Preprocessing & Feature Engineering</h2>
+            <div class="cards">
+                <div class="card">
+                    <h2><span class="icon">1</span> Data Collection</h2>
+                    <ul>
+                        <li>Environmental monitoring data from multiple stations</li>
+                        <li>Features: State, location, SO2, NO2, RSPM, SPM, PM2.5</li>
+                        <li>Comprehensive temporal and spatial coverage</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h2><span class="icon">2</span> Preprocessing</h2>
+                    <ul>
+                        <li>Missing values handled with mode imputation for categorical features</li>
+                        <li>Numerical features with missing values replaced with zeros</li>
+                        <li>Removal of irrelevant columns (agency, stn_code, etc.)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h2><span class="icon">3</span> Feature Engineering</h2>
+                    <ul>
+                        <li>Calculation of individual pollutant indices (SOi, Rpi, SPMi)</li>
+                        <li>Derivation of overall Air Quality Index (AQI)</li>
+                        <li>Categorization of AQI into predefined ranges</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title">ML Models Implementation</h2>
+            <div class="cards">
+                <div class="card model-card">
+                    <div class="model-header">
+                        <span class="model-name">Logistic Regression</span>
+                        <span class="model-accuracy">78% Acc</span>
+                    </div>
+                    <p class="model-description">Base classification model using sigmoid function to map features to AQI category probabilities.</p>
+                    <div class="strengths-weaknesses">
+                        <div class="strengths">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Simple</li>
+                                <li>Interpretable</li>
+                                <li>Efficient</li>
+                            </ul>
+                        </div>
+                        <div class="weaknesses">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Linear only</li>
+                                <li>Limited complexity</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card model-card">
+                    <div class="model-header">
+                        <span class="model-name">Decision Tree</span>
+                        <span class="model-accuracy">82% Acc</span>
+                    </div>
+                    <p class="model-description">Tree-based classification creating a hierarchical structure of decision rules.</p>
+                    <div class="strengths-weaknesses">
+                        <div class="strengths">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Handles non-linearity</li>
+                                <li>Easy to visualize</li>
+                                <li>Mixed data types</li>
+                            </ul>
+                        </div>
+                        <div class="weaknesses">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Overfitting risk</li>
+                                <li>Instability</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card model-card">
+                    <div class="model-header">
+                        <span class="model-name">Random Forest</span>
+                        <span class="model-accuracy">91% Acc</span>
+                    </div>
+                    <p class="model-description">Ensemble method combining multiple decision trees for robust classification.</p>
+                    <div class="strengths-weaknesses">
+                        <div class="strengths">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>High accuracy</li>
+                                <li>Reduces overfitting</li>
+                                <li>Feature importance</li>
+                            </ul>
+                        </div>
+                        <div class="weaknesses">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Computationally intensive</li>
+                                <li>Less interpretable</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card model-card">
+                    <div class="model-header">
+                        <span class="model-name">K-Nearest Neighbors</span>
+                        <span class="model-accuracy">79% Acc</span>
+                    </div>
+                    <p class="model-description">Instance-based classification using proximity of data points in feature space.</p>
+                    <div class="strengths-weaknesses">
+                        <div class="strengths">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Non-parametric</li>
+                                <li>Intuitive approach</li>
+                                <li>Local patterns</li>
+                            </ul>
+                        </div>
+                        <div class="weaknesses">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Curse of dimensionality</li>
+                                <li>Computation cost</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card model-card">
+                    <div class="model-header">
+                        <span class="model-name">SVM</span>
+                        <span class="model-accuracy">85% Acc</span>
+                    </div>
+                    <p class="model-description">Boundary-based classification finding optimal hyperplane between categories.</p>
+                    <div class="strengths-weaknesses">
+                        <div class="strengths">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Effective in high dimensions</li>
+                                <li>Kernel flexibility</li>
+                                <li>Robust to outliers</li>
+                            </ul>
+                        </div>
+                        <div class="weaknesses">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Parameter tuning</li>
+                                <li>Computational cost</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card model-card">
+                    <div class="model-header">
+                        <span class="model-name">Deep Learning</span>
+                        <span class="model-accuracy">88% Acc</span>
+                    </div>
+                    <p class="model-description">Neural network approach learning hierarchical representations of data.</p>
+                    <div class="strengths-weaknesses">
+                        <div class="strengths">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Complex patterns</li>
+                                <li>Adaptable architecture</li>
+                                <li>Feature learning</li>
+                            </ul>
+                        </div>
+                        <div class="weaknesses">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Data hungry</li>
+                                <li>Black-box nature</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title">Optimization & Additional Models</h2>
+            <div class="cards">
+                <div class="card model-card">
+                    <div class="model-header">
+                        <span class="model-name">Genetic Algorithm</span>
+                    </div>
+                    <p class="model-description">Evolutionary approach for hyperparameter optimization across models.</p>
+                    <div class="strengths-weaknesses">
+                        <div class="strengths">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Escapes local optima</li>
+                                <li>Wide exploration</li>
+                                <li>Parameter-free search</li>
+                            </ul>
+                        </div>
+                        <div class="weaknesses">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Computation cost</li>
+                                <li>Complex configuration</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card model-card">
+                    <div class="model-header">
+                        <span class="model-name">Extreme Learning Machine</span>
+                        <span class="model-accuracy">83% Acc</span>
+                    </div>
+                    <p class="model-description">Fast neural network with random hidden layers and analytical output determination.</p>
+                    <div class="strengths-weaknesses">
+                        <div class="strengths">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Extremely fast training</li>
+                                <li>Good generalization</li>
+                                <li>Simple architecture</li>
+                            </ul>
+                        </div>
+                        <div class="weaknesses">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Random initialization</li>
+                                <li>Less powerful than DL</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card model-card">
+                    <div class="model-header">
+                        <span class="model-name">Naive Bayes</span>
+                        <span class="model-accuracy">76% Acc</span>
+                    </div>
+                    <p class="model-description">Probabilistic classification using Bayes' theorem with feature independence assumption.</p>
+                    <div class="strengths-weaknesses">
+                        <div class="strengths">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Simple & fast</li>
+                                <li>High-dim data</li>
+                                <li>Categorical data</li>
+                            </ul>
+                        </div>
+                        <div class="weaknesses">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Independence assumption</li>
+                                <li>Zero frequency issue</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title">AQI Calculation Methodology</h2>
+            <div class="aqi-calculation">
+                <p>The Air Quality Index (AQI) is calculated using a piecewise linear function that maps individual pollutant indices to corresponding AQI values.</p>
+                
+                <div class="aqi-formula">
+                    AQI = [(I_High - I_Low) / (C_High - C_Low)] × (C - C_Low) + I_Low
+                </div>
+                
+                <div class="steps">
+                    <div class="step">
+                        <h3>Determine Primary Pollutant</h3>
+                        <p>Identify the highest individual pollutant index (max of SOi, Rpi, SPMi) which becomes the primary pollutant for AQI calculation.</p>
+                    </div>
+                    <div class="step">
+                        <h3>Identify Breakpoints</h3>
+                        <p>Determine the concentration range (C_Low to C_High) that contains the primary pollutant's measured value.</p>
+                    </div>
+                    <div class="step">
+                        <h3>Apply Linear Interpolation</h3>
+                        <p>Use the formula to calculate the AQI value based on the pollutant concentration and corresponding index breakpoints.</p>
+                    </div>
+                    <div class="step">
+                        <h3>Classify AQI Range</h3>
+                        <p>Categorize the resulting AQI value into predefined ranges:</p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><span style="color: #10b981; font-weight: bold;">0-50:</span> Good</li>
+                            <li><span style="color: #f59e0b; font-weight: bold;">51-100:</span> Moderate</li>
+                            <li><span style="color: #f97316; font-weight: bold;">101-150:</span> Poor</li>
+                            <li><span style="color: #ef4444; font-weight: bold;">151-200:</span> Unhealthy</li>
+                            <li><span style="color: #7c3aed; font-weight: bold;">201-300:</span> Very Unhealthy</li>
+                            <li><span style="color: #831843; font-weight: bold;">301+:</span> Hazardous</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title">Model Performance Comparison</h2>
+            <div class="chart-container">
+                <h3 style="margin-bottom: 1rem;">Accuracy Comparison (%)</h3>
+                <div class="chart">
+                    <div class="bar" style="height: 78%;">
+                        <span class="bar-value">78%</span>
+                        <span class="bar-label">Logistic</span>
+                    </div>
+                    <div class="bar" style="height: 82%;">
+                        <span class="bar-value">82%</span>
+                        <span class="bar-label">D.Tree</span>
+                    </div>
+                    <div class="bar" style="height: 91%;">
+                        <span class="bar-value">91%</span>
+                        <span class="bar-label">RF</span>
+                    </div>
+                    <div class="bar" style="height: 79%;">
+                        <span class="bar-value">79%</span>
+                        <span class="bar-label">KNN</span>
+                    </div>
+                    <div class="bar" style="height: 85%;">
+                        <span class="bar-value">85%</span>
+                        <span class="bar-label">SVM</span>
+                    </div>
+                    <div class="bar" style="height: 76%;">
+                        <span class="bar-value">76%</span>
+                        <span class="bar-label">NB</span>
+                    </div>
+                    <div class="bar" style="height: 88%;">
+                        <span class="bar-value">88%</span>
+                        <span class="bar-label">DL</span>
+                    </div>
+                    <div class="bar" style="height: 83%;">
+                        <span class="bar-value">83%</span>
+                        <span class="bar-label">ELM</span>
+                    </div>
+                </div>
+                <div class="x-axis"></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Certificates of Presentation</h2>
+            <div class="carousel">
+                <div class="carousel-container">
+                    <div class="carousel-item">
+                        <img src="./images/certificate1.jpg" alt="Certificate 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./images/certificate2.jpg" alt="Certificate 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./images/certificate3.jpg" alt="Certificate 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./images/certificate4.jpg" alt="Certificate 4">
+                    </div>
+                </div>
+                <button class="carousel-button prev" onclick="moveCarousel(-1)">&#10094;</button>
+                <button class="carousel-button next" onclick="moveCarousel(1)">&#10095;</button>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Publication</h2>
+            <div class="publication-content">
+                <p><strong>INTERNATIONAL CONFERENCE</strong></p>
+                <p>
+                    <strong>Kishan Agarwal, Srinivasulu Chennupalli, Rishi Kolluru, Hamanpure Vaibhav,</strong><br>
+                    "Predictive Modeling of Air Quality: Performance Comparison of Supervised Machine Learning, Deep Learning, and Extreme Learning Machines," 
+                    <em>International Conference on Intelligent Computing and Control Systems (ICICCS), 2025.</em>
+                </p>
+                <p><strong>Conference Details:</strong></p>
+                <ul>
+                    <li>The conference was held at Nandha College of Technology, Erode, Tamil Nadu, India, from March 19-21, 2025.</li>
+                    <li>The paper has been peer-reviewed and accepted for presentation at the conference.</li>
+                    <li>The Letter of Acceptance indicates that the paper was accepted with major revisions.</li>
+                </ul>
+                <p><strong>Research Highlights:</strong></p>
+                <ul>
+                    <li>The paper explores the application of supervised machine learning, deep learning, Extreme Learning Machines (ELM), and Genetic Algorithms (GA) for predicting Air Quality Index (AQI).</li>
+                    <li>Key attributes such as sulfur dioxide (SO2), nitrogen dioxide (NO2), respirable suspended particulate matter (RSPM), suspended particulate matter (SPM), and PM2.5 were used to predict AQI.</li>
+                    <li>The research highlights the strengths and weaknesses of each model, providing a comparative perspective to aid in the selection of appropriate models for air quality prediction.</li>
+                </ul>
+                <p><strong>Proceedings:</strong></p>
+                <p>
+                    The proceedings of the International Conference on Intelligent Computing and Control Systems (ICICCS-2025) have the following details:<br>
+                    <strong>DVD Part Number:</strong> CFP25K74-DVD<br>
+                    <strong>ISBN:</strong> 979-8-3315-1207-1
+                </p>
+            </div>
+            <!-- Links to preview the report and research paper -->
+        <div style="margin-top: 1rem;">
+            <a href="./files/Main_Black_Book_Report.pdf" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: bold;">
+                Preview Project Report
+            </a>
+            <br />
+            <a href="./files/paper.pdf" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: bold;">
+                View IEEE Research Paper
+            </a>
+            <br />
+            <a href="https://colab.research.google.com/drive/1IJSUrN-LYPS_vKNlk9WPbNWE2CTRWSJ1?usp=sharing" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: bold;">
+                View Code on Google Colab
+            </a>
+        </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>© 2025, Kishan Agarwal, Rishi Kolluru, Hamanpure Vaibhav. </p>
+        <p>Created using cutting-edge machine learning techniques for environmental monitoring</p>
+        
+
+        <script>
+        // Theme switcher functionality
+        const toggleSwitch = document.querySelector('#checkbox');
+        const currentTheme = localStorage.getItem('theme');
+
+        // Apply the saved theme on page load
+        if (currentTheme) {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'dark') {
+                toggleSwitch.checked = true;
+            }
+        }
+
+        // Function to switch themes
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Add event listener to the toggle switch
+        toggleSwitch.addEventListener('change', switchTheme);
+
+        // Animation for bars
+        document.addEventListener('DOMContentLoaded', function() {
+            const bars = document.querySelectorAll('.bar');
+
+            // Set initial height to 0
+            bars.forEach(bar => {
+                const targetHeight = bar.style.height;
+                bar.style.height = '0';
+
+                // Trigger animation after a small delay
+                setTimeout(() => {
+                    bar.style.height = targetHeight;
+                }, 300);
+            });
+        });
+
+        let currentIndex = 0;
+
+        function moveCarousel(direction) {
+            const carouselContainer = document.querySelector('.carousel-container');
+            const items = document.querySelectorAll('.carousel-item');
+            const totalItems = items.length;
+
+            currentIndex = (currentIndex + direction + totalItems) % totalItems;
+            const offset = -currentIndex * 100;
+            carouselContainer.style.transform = `translateX(${offset}%)`;
+        }
+        </script>
+    </footer>
+</body>
+</html>
